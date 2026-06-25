@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
 import apiRouter from './src/routes';
 import connectionDB from './src/connection/connection';
 
@@ -7,6 +8,7 @@ const app: Express = express();
 const port: number = 3000;
 
 app.use(morgan('dev'));
+app.use(cors({ origin: true }));
 app.use(express.json());
 app.use(apiRouter);
 
