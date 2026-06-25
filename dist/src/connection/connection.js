@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const sequelize_typescript_1 = require("sequelize-typescript");
 const product_1 = require("../models/product");
+const category_1 = require("../models/category");
 const connection = new sequelize_typescript_1.Sequelize({
     database: 'sisweb_db',
     dialect: 'postgres',
@@ -19,14 +20,14 @@ const connection = new sequelize_typescript_1.Sequelize({
     password: 'HDK#$%Ljkwerff.89',
     host: 'localhost',
     port: 5432,
-    models: [product_1.Product],
+    models: [category_1.Category, product_1.Product],
 });
 function connectionDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield connection.authenticate();
             console.log('Conexión exitosa a PostgreSQL.');
-            yield connection.sync();
+            yield connection.sync({ alter: true });
             console.log('Modelos sincronizados con la base de datos.');
         }
         catch (e) {

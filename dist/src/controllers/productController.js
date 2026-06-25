@@ -11,13 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.modifyProduct = exports.getProductById = exports.getAllProducts = exports.createProduct = void 0;
 const product_1 = require("../models/product");
+const category_1 = require("../models/category");
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const product = yield product_1.Product.create(req.body);
+        const productWithCategory = yield product_1.Product.findByPk(product.id, {
+            include: [category_1.Category],
+        });
         res.status(200).json({
             status: 'success',
             message: 'Product successfully created',
-            payload: product,
+            payload: productWithCategory,
         });
     }
     catch (error) {
@@ -31,7 +35,9 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.createProduct = createProduct;
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield product_1.Product.findAll();
+        const products = yield product_1.Product.findAll({
+            include: [category_1.Category],
+        });
         res.status(200).json({
             status: 'success',
             message: 'Products successfully retrieved',
@@ -50,7 +56,9 @@ exports.getAllProducts = getAllProducts;
 const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = Number(req.params.id);
-        const product = yield product_1.Product.findByPk(id);
+        const product = yield product_1.Product.findByPk(id, {
+            include: [category_1.Category],
+        });
         if (!product) {
             res.status(404).json({
                 status: 'error',
@@ -87,10 +95,13 @@ const modifyProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return;
         }
         yield product.update(req.body);
+        const updatedProduct = yield product_1.Product.findByPk(id, {
+            include: [category_1.Category],
+        });
         res.status(200).json({
             status: 'success',
             message: 'Product successfully updated',
-            payload: product,
+            payload: updatedProduct,
         });
     }
     catch (error) {

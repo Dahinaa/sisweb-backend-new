@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Product } from '../models/product';
+import { Category } from '../models/category';
 
 export const createProduct = async (
   req: Request,
@@ -8,10 +9,14 @@ export const createProduct = async (
   try {
     const product = await Product.create(req.body);
 
+    const productWithCategory = await Product.findByPk(product.id, {
+      include: [Category],
+    });
+
     res.status(200).json({
       status: 'success',
       message: 'Product successfully created',
-      payload: product,
+      payload: productWithCategory,
     });
   } catch (error) {
     res.status(500).json({
@@ -27,7 +32,9 @@ export const getAllProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+      include: [Category],
+    });
 
     res.status(200).json({
       status: 'success',
@@ -50,7 +57,9 @@ export const getProductById = async (
   try {
     const id = Number(req.params.id);
 
-    const product = await Product.findByPk(id);
+    const product = await Product.findByPk(id, {
+      include: [Category],
+    });
 
     if (!product) {
       res.status(404).json({
@@ -95,10 +104,14 @@ export const modifyProduct = async (
 
     await product.update(req.body);
 
+    const updatedProduct = await Product.findByPk(id, {
+      include: [Category],
+    });
+
     res.status(200).json({
       status: 'success',
       message: 'Product successfully updated',
-      payload: product,
+      payload: updatedProduct,
     });
   } catch (error) {
     res.status(500).json({

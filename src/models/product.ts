@@ -5,8 +5,11 @@ import {
   CreatedAt,
   UpdatedAt,
   DataType,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Optional } from 'sequelize';
+import { Category } from './category';
 
 interface ProductAttributes {
   id: number;
@@ -16,10 +19,10 @@ interface ProductAttributes {
   discountPercentage: number;
   rating: number;
   stock: number;
+  categoryId?: number;
 }
 
-interface ProductCreationAttributes
-  extends Optional<ProductAttributes, 'id'> {}
+interface ProductCreationAttributes extends Optional<ProductAttributes, 'id'> {}
 
 @Table({
   tableName: 'Products',
@@ -62,6 +65,16 @@ export class Product extends Model<
     type: DataType.INTEGER,
   })
   stock!: number;
+
+  @ForeignKey(() => Category)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  categoryId?: number;
+
+  @BelongsTo(() => Category)
+  category?: Category;
 
   @CreatedAt
   @Column
