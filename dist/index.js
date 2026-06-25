@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const routes_1 = __importDefault(require("./src/routes"));
+const connection_1 = __importDefault(require("./src/connection/connection"));
 const app = (0, express_1.default)();
 const port = 3000;
 app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(routes_1.default);
+(0, connection_1.default)();
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
